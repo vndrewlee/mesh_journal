@@ -4,10 +4,12 @@ $(function () {
   var socket = io();
   $('form').submit(function(){
     let text = $('#myInput').val();
-    socket.emit('chat message', text);
-    add_node(text);
-    $('#messages').append($('<li>').text(text));
-    $('#myInput').val('');
+    if (text.length>0){
+      socket.emit('chat message', text);
+      add_node(text);
+      $('#messages').append($('<li>').text(text));
+      $('#myInput').val('');
+    } 
     return false;
   });
   socket.on('chat message', function(msg){
