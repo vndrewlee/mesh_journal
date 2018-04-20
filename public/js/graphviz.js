@@ -5,8 +5,8 @@ const margin = {
         bottom: 30,
         left: 30
     },
-    width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = window.innerWidth - margin.left - margin.right,
+    height = window.innerWidth/4 - margin.top - margin.bottom;
 
 let svg = d3.select("#graph")
     .append("svg")
@@ -17,17 +17,10 @@ let svg = d3.select("#graph")
 
 //Original data
 let nodes = [{
-        name: "wake up"
-    },
-    {
-        name: "eat a snack"
-    },
-    {
-        name: "check my phone"
-    },
-    {
-        name: "go back to sleep"
-    },
+        name: "wake up",
+        fx: 0,
+        fy: 0
+    }
 ];
 
 let links = [];
@@ -42,10 +35,10 @@ nodes.forEach(function (n, i) {
 });
 
 let simulation = d3.forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(10))
-    .force("link", d3.forceLink(links).distance(100))
+    .force("charge", d3.forceManyBody().strength(-10))
+    .force("link", d3.forceLink(links))
     .force("center", d3.forceCenter().x(width / 2).y(height / 2))
-    .alphaTarget(.6);
+    .alphaTarget(1);
 
 simulation.on("tick", function () {
     link.attr("x1", function (d) {
@@ -88,7 +81,7 @@ let node = svg.selectAll(".node")
 //Create nodes as circles
 
 node.append("circle")
-    .attr("r", 10)
+    .attr("r", 5)
     .style("fill", function (d, i) {
         return colors(i);
     });
@@ -96,7 +89,7 @@ node.append("circle")
 // add text
 node.append("text")
     .attr("dx", 12)
-    .attr("dy", ".35em")
+    .attr("dy", ".1em")
     .text(function (d) {
         return d.name
     });
@@ -151,14 +144,14 @@ function restart() {
         .merge(node);
 
     node.append("circle")
-        .attr("r", 10)
+        .attr("r", 5)
         .style("fill", function (d, i) {
             return colors(i);
         });
 
     node.append("text")
         .attr("dx", 12)
-        .attr("dy", ".35em")
+        .attr("dy", ".1em")
         .text(function (d) {
             return d.name
         });
