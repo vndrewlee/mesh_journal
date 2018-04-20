@@ -5,6 +5,7 @@ $(function () {
   $('form').submit(function(){
     let text = $('#myInput').val();
     socket.emit('chat message', text);
+    add_node(text);
     $('#messages').append($('<li>').text(text));
     $('#myInput').val('');
     return false;
