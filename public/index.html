@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>stubgraph</title>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <h1>what did you do today?</h1>
-    <p>examples: "went to bed", "ate a snack", "took off my shoes"</p>
-    <ul id="messages">
-      <li>Woke up</li>
-    </ul>
-    <div id="graph" ></div>
-    <form autocomplete="off">
-      <div class="autocomplete" style="width:300px;">
-        <input id="myInput" type="text" name="myCountry" placeholder="... and then what? ✨">
-      </div>
-      <input type="submit">
-    </form>
-    <script src="js/graphviz.js"></script>
-    <script src="js/form.js"></script>
-  </body>
+
+<head>
+  <title>stubgraph</title>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <h1>what did you do today?</h1>
+  <p>examples: "went to bed", "ate a snack", "took off my shoes"</p>
+  <div id="graph"></div>
+
+  <div class="row">
+    <div class="column" style="background-color:rgb(234, 212, 255);">
+      <ul id="messages">
+        <li>Woke up</li>
+      </ul>
+
+    </div>
+    <div class="column" style="background-color:rgb(255, 234, 242);">
+      <form autocomplete="off">
+        <div class="autocomplete" style="width:300px;">
+          <input id="myInput" type="text" name="myCountry" placeholder="... and then what? ✨">
+        </div>
+        <input type="submit">
+      </form>
+    </div>
+  </div>
+
+  <script src="js/graphviz.js"></script>
+  <script src="js/form.js"></script>
+</body>
+
 </html>
