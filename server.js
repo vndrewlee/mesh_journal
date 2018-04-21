@@ -12,8 +12,11 @@ app.use(express.static('public'));
 // Create socket connection
 let io = require('socket.io').listen(server);
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+io.on('connection', function (socket) {
+  socket.on('new node', function (msg) {
+    io.emit('new node', msg);
+  });
+  socket.on('new link', function (msg) {
+    io.emit('new link', msg);
   });
 });

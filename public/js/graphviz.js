@@ -6,7 +6,7 @@ const margin = {
         left: 30
     },
     width = window.innerWidth - margin.left - margin.right,
-    height = window.innerWidth/4 - margin.top - margin.bottom;
+    height = window.innerWidth / 4 - margin.top - margin.bottom;
 
 let svg = d3.select("#graph")
     .append("svg")
@@ -15,30 +15,41 @@ let svg = d3.select("#graph")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-//Original data
 let nodes = [{
         name: "wake up",
         fx: 0,
         fy: 0
+    },
+    {
+        name: "poop"
     }
 ];
 
+let my_nodes = ["wake up", "poop"];
+
 let links = [];
 
-nodes.forEach(function (n, i) {
-    if (i < nodes.length - 1) {
+my_nodes.forEach(function (n, i) {
+    if (i < my_nodes.length - 1) {
         links.push({
-            source: nodes[i],
-            target: nodes[i + 1]
+            source: my_nodes[i],
+            target: my_nodes[i + 1]
         })
     }
 });
 
-let simulation = d3.forceSimulation(nodes)
+// set up empty 
+let simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody().strength(-10))
-    .force("link", d3.forceLink(links))
-    .force("center", d3.forceCenter().x(width / 2).y(height / 2))
+    .force("link", d3.forceLink().id(function (d) {
+        return d.name;
+    }))
+    // .force("center", d3.forceCenter().x(width / 2).y(height / 2))
     .alphaTarget(1);
+
+// add nodes and links
+simulation.nodes(nodes);
+simulation.force("link").links(links);
 
 simulation.on("tick", function () {
     link.attr("x1", function (d) {
@@ -69,6 +80,7 @@ let link = svg.selectAll(".link")
     .style("stroke", "#ccc")
     .style("stroke-width", 1);
 
+// add empty groups for each node
 let node = svg.selectAll(".node")
     .data(nodes)
     .enter().append("g")
@@ -78,15 +90,14 @@ let node = svg.selectAll(".node")
         .on("drag", dragging)
         .on("end", dragEnded));
 
-//Create nodes as circles
-
+//Create add circle to node group
 node.append("circle")
     .attr("r", 5)
     .style("fill", function (d, i) {
         return colors(i);
     });
 
-// add text
+// add text to node group
 node.append("text")
     .attr("dx", 12)
     .attr("dy", ".1em")
@@ -115,9 +126,10 @@ function dragEnded(d) {
 function restart() {
 
     // Apply the general update pattern to the links.
-    link = link.data(links, function (d) {
-        return d.source.id + "-" + d.target.id;
-    });
+    // link = link.data(links, function (d) {
+    //     return d.source.id + "-" + d.target.id;
+    // });
+    link = link.data(links);
 
     link.exit().remove();
 
@@ -129,9 +141,10 @@ function restart() {
         .merge(link);
 
     // Apply the general update pattern to the nodes.
-    node = node.data(nodes, function (d) {
-        return d.id;
-    });
+    // node = node.data(nodes, function (d) {
+    //     return d.id;
+    // });
+    node = node.data(nodes);
 
     node.exit().remove();
 
@@ -162,16 +175,19 @@ function restart() {
     simulation.alpha(1).restart();
 }
 
-function add_node(n) {
-    nodes.push({ name: n });
+var findNode = function (id) {
+    for (var i in simulation.nodes()) {
+        if (simulation.nodes()[i]["name"] == id) return simulation.nodes()[i]
+    };
+    return null;
+}
 
-    links = [];
-
-    nodes.forEach(function (n, i) {
-        if (i < nodes.length - 1) {
-            links.push({ source: nodes[i], target: nodes[i + 1] })
-        }
-    });
-
-    restart();
+var pushLink = function (link) {
+    //console.log(link)
+    if (findNode(link.source) != null && findNode(link.target) != null) {
+        force.links().push({
+            "source": findNode(link.source),
+            "target": findNode(link.target)
+        })
+    }
 }

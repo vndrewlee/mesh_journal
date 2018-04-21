@@ -5,20 +5,32 @@ $(function () {
   $('form').submit(function () {
     let text = $('#myInput').val();
     if (text.length > 0) {
-      socket.emit('chat message', text);
+      $('#messages').append($('<li>').text(text));
+      my_nodes.push(text);
+      socket.emit('new node', text);
       $('#myInput').val('');
+      let new_link = {
+        source: my_nodes[my_nodes.length - 2],
+        target: my_nodes[my_nodes.length - 1]
+      };
+      let new_link_text = JSON.stringify(new_link);
+      socket.emit('new link', new_link_text);
     }
     return false;
   });
-  socket.on('chat message', function (msg) {
-    // $('#messages').append($('<li>').text(msg));
+  socket.on('new node', function (msg) {
     !node_suggestions.includes(msg) ? node_suggestions.push(msg) : null;
-    add_node(msg);
-    $('#messages').append($('<li>').text(msg));
+    nodes.push({
+      name: msg
+    });
+    restart();
     window.scrollTo(0, document.body.scrollHeight);
   });
-  socket.on('preload', function (msg) {
-    // insert values to replace node_suggestions
+  socket.on('new link', function (msg) {
+    let new_link = JSON.parse(msg);
+    console.log(new_link);
+    links.push(new_link);
+    restart();
   });
 });
 
