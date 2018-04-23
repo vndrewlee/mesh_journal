@@ -13,10 +13,7 @@ app.use(express.static('public'));
 let io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
-  socket.on('new node', function (msg) {
-    io.emit('new node', msg);
-  });
-  socket.on('new link', function (msg) {
-    io.emit('new link', msg);
+  socket.on('new', function (msg) {
+    io.emit('new', msg);
   });
 });
