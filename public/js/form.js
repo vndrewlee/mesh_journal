@@ -1,36 +1,74 @@
 let node_suggestions = [];
+var socket_id = 123;
 
 $(function () {
   var socket = io();
   $('form').submit(function () {
     let text = $('#myInput').val();
+
     if (text.length > 0) {
+      // add text to chat log
       $('#messages').append($('<li>').text(text));
-      my_nodes.push(text);
-      socket.emit('new node', text);
+      // clear the form
       $('#myInput').val('');
-      let new_link = {
-        source: my_nodes[my_nodes.length - 2],
-        target: my_nodes[my_nodes.length - 1]
+
+      // make random number for id
+      let ran = parseInt(Math.random() * 1000000);
+      let new_node = {
+        id: ran,
+        name: text
       };
-      let new_link_text = JSON.stringify(new_link);
-      socket.emit('new link', new_link_text);
+      let new_link = {
+        source: cursor.id,
+        target: new_node.id
+      };
+      socket.emit('new', {
+        link: new_link,
+        node: new_node
+      });
+      // update cursor
+      cursor = new_node;
     }
     return false;
   });
-  socket.on('new node', function (msg) {
-    !node_suggestions.includes(msg) ? node_suggestions.push(msg) : null;
-    nodes.push({
-      name: msg
+
+  socket.on('new', function (msg) {
+    let packet = msg;
+
+    // update autocomplete
+    !node_suggestions.includes(packet.node.name) ? node_suggestions.push(packet.node.name) : null;
+
+    // TODO: check for air gap, if gapped, attach to wake up
+    let matching_source = nodes.find(function (obj) {
+      return obj.id == packet.link.source;
     });
+    if (matching_source == undefined) {
+      packet.link.source = nodes[0];
+    };
+
+    // check for naming duplicate
+    // make an edge to old node, no new node
+    let matching_nodes = nodes.filter(function (obj) {
+      return obj.name == packet.node.name;
+    });
+    if (matching_nodes.length > 0) {
+      //change link target to matching node 
+      //and dont add new node
+      packet.link.target = matching_nodes[matching_nodes.length - 1];
+      links.push(packet.link);
+      // step the cursor
+      cursor = packet.link.target;
+    } else {
+      nodes.push(packet.node);
+      links.push(packet.link);
+    }
+    // check if there is any node with the same name msg.node.name
     restart();
-    window.scrollTo(0, document.body.scrollHeight);
   });
-  socket.on('new link', function (msg) {
-    let new_link = JSON.parse(msg);
-    console.log(new_link);
-    links.push(new_link);
-    restart();
+
+  // Listen for confirmation of connection
+  socket.on('connect', function () {
+    socket_id = socket.id;
   });
 });
 
@@ -137,3 +175,25 @@ function autocomplete(inp, arr) {
 }
 
 autocomplete(document.getElementById("myInput"), node_suggestions);
+
+// var findNode = function (id) {
+//     for (var i in nodes {
+//         if (nodes[i]["name"] == id) {
+//           return nodes[i]
+//         };
+//         return null;
+//       }
+
+//       var obj = objArray.find(function (obj) {
+//         return obj.id === 3;
+//       });
+
+//       var pushLink = function (link) {
+//         //console.log(link)
+//         if (findNode(link.source) != null && findNode(link.target) != null) {
+//           links.push({
+//             "source": findNode(link.source),
+//             "target": findNode(link.target)
+//           })
+//         }
+//       }
