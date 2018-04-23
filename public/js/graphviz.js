@@ -22,10 +22,10 @@ let nodeLayer = svg.append("g")
     .attr("class", "nodeLayer");
 
 let nodes = [{
-    name: "wake up",
-    id: "wake up",
+    name: "woke up",
+    id: "woke up",
     fx: 0,
-    fy: 0
+    fy: height / 2
 }];
 
 // initialize data
@@ -36,13 +36,11 @@ let links = [];
 
 // set up empty 
 let simulation = d3.forceSimulation()
-    .force("charge", d3.forceManyBody().strength(-100))
+    .force("charge", d3.forceManyBody().strength(-10))
     .force("link", d3.forceLink().id(function (d) {
         return d.id;
-    }).strength(1))
-    // .force("center", d3.forceCenter().x(width / 2).y(height / 2))
+    }).distance(20))
     .force('x', d3.forceX(width).strength(.005))
-    .force('y', d3.forceY(height).strength(.01))
     .alphaTarget(1);
 
 simulation.on("tick", function () {
