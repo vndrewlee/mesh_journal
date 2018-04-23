@@ -13,3 +13,9 @@ A feedforward graph of possible nodes in a time directed sequence
 - labels https://bl.ocks.org/heybignick/3faf257bbbbc7743bb72310d03b86ee8
 - static layout https://bl.ocks.org/mbostock/1667139
 
+
+## Issues
+
+- [x] duplicate circles and texts on each group after refresh
+- [x] no linking between branches
+- [ ] documentation
