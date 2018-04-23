@@ -176,24 +176,16 @@ function autocomplete(inp, arr) {
 
 autocomplete(document.getElementById("myInput"), node_suggestions);
 
-// var findNode = function (id) {
-//     for (var i in nodes {
-//         if (nodes[i]["name"] == id) {
-//           return nodes[i]
-//         };
-//         return null;
-//       }
+// Get the input field
+var input = document.getElementById("myInput");
 
-//       var obj = objArray.find(function (obj) {
-//         return obj.id === 3;
-//       });
-
-//       var pushLink = function (link) {
-//         //console.log(link)
-//         if (findNode(link.source) != null && findNode(link.target) != null) {
-//           links.push({
-//             "source": findNode(link.source),
-//             "target": findNode(link.target)
-//           })
-//         }
-//       }
+// Execute a function when the user releases a key on the keyboard
+input.addEventListener("keyup", function (event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("myBtn").click();
+  }
+});
